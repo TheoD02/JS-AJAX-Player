@@ -1,39 +1,56 @@
-
 var containerplayer = document.getElementById("container-mp3"),
     player = document.getElementById("audioplayer"),
-    progress = document.getElementById("mp3-progress-bar"),
-    containerProgress = document.getElementById("mp3-progress-bar-container"),
-    btnPlayPause = document.getElementById("btn-play-pause"),
-    mp3Infos = document.getElementById("mp3-infos"),
-    btnChangeMP3 = document.getElementById("mp3-change"),
-    btnPlay = document.querySelectorAll(".mdi-play-circle-outline"),
-    volume = document.getElementById("mp3-volume");
-
-var btnRefresh = document.querySelector(".refresher");
-btnRefresh.addEventListener("click", function () {
-    $.ajax({
-        url: 'get_table.php',
-        method: "GET",
-        dataType: 'json',
-        success: function (response) {
-            $('#dynamic-table').html(response);
-        }
-    });
-    // Wait dynamic update to get new btn
-    setTimeout(function () {
-        btnPlay = document.querySelectorAll(".mdi-play-circle-outline");
-        console.log(btnPlay);
-        // Ecoute de tous les boutons "Play" de la listes
-        btnPlay.forEach(element => {
-            element.addEventListener("click", clickPlayPauseList, false);
-        });
-    }, 500);
-
-});
-
-
-// Cache le lecteur HTML5 par défault
+    btnPlay = document.querySelectorAll(".mdi-play-circle-outline");
+// Cache le lecteur HTML5 par défaut
 player.removeAttribute("controls");
+
+
+var lastTablePlayBtnClicked = null;
+// Init du player lors du chargement d'un nouveau tableau (de pagination.js)
+function initplayer() {
+    // Récupère les nouveau bouton
+    // Attend 100ms a repetition uniquement tant que le nb de btnPlay dans la liste est inférieur à 1
+    setTimeout(function () {
+        var nbBtn = document.querySelectorAll(".playback>i.mdi-play-circle-outline").length;
+        while (nbBtn < 1) {
+            // Stop la boucle et la repetition de la function
+            clearTimeout(this);
+        }
+        btnPlay = document.querySelectorAll(".mdi-play-circle-outline");
+        btnPlay.forEach(btn => {
+            btn.addEventListener("click", playerPlay, false);
+        });
+    }, 200);
+
+    // Regarder si le lecteur a déjà une source, si pas de source lui donner la 1ere track du tableau afficher à l'écran
+    if (player.getAttribute("src") === "") {
+        // Récupère l'url du premier bouton de lecture
+        var firstUrl = document.querySelector(".playback > i.mdi.mdi-play-circle-outline").getAttribute("url");
+        // Assigne l'url au lecteur
+        player.setAttribute("src", firstUrl);
+
+        // Assigne donc le dernier bouton 'cliquer' comme le premier bouton de lecture
+        lastTablePlayBtnClicked = btnPlay[0];
+    }
+
+    // Lire les tags du fichier en cours
+    readMP3_Tags(player.getAttribute("src"));
+
+    // Show player when table and all data init
+    containerplayer.style.display = "block";
+}
+
+// Read Tags to Show on Player
+var mp3Infos = document.getElementById("mp3-infos");
+function readMP3_Tags(fileToRead) {
+    ID3.loadTags(fileToRead, function () {
+        var tags = ID3.getAllTags(fileToRead);
+        mp3Infos.innerText = tags.title + " - " + tags.artist;
+    });
+}
+
+/* TIME SECTION*/
+var timeProgress = document.getElementById("mp3-progress-bar");
 
 // Update Time & Listener (timeupdate)
 player.addEventListener('timeupdate', updateTime, false);
@@ -45,127 +62,47 @@ function updateTime() {
     var total_seconds = parseInt(player.duration % 60);
     var total_minutes = parseInt((player.duration / 60) % 60);
 
-    var correct_time_played = zeroWarn(seconds_played, minutes_played);
-    var correct_total_time = zeroWarn(total_seconds, total_minutes);
-    var final_time = correct_time_played[1] + ":" + correct_time_played[0] + "/" + correct_total_time[1] + ":" + correct_total_time[0];
+    if (total_seconds == null || total_minutes == null) {
+        timeProgress.style.width = 0 + "%";
+        timeProgress.innerHTML = "Aucune données...";
+    }
+    if (total_seconds !== null || total_minutes !== null) {
+        timeProgress.style.width = 0 + "%";
+        timeProgress.innerHTML = "En attente de lecture...";
+    }
+    if ((seconds_played !== 0 || minutes_played !== 0) && (total_seconds !== null || total_minutes !== null)) {
+        var correct_time_played = zeroWarn(seconds_played, minutes_played);
+        var correct_total_time = zeroWarn(total_seconds, total_minutes);
+        var final_time = correct_time_played[1] + ":" + correct_time_played[0] + "/" + correct_total_time[1] + ":" + correct_total_time[0];
 
-    // Calcul & Update Progress Bar 
-    var pourcentage = (player.currentTime / player.duration) * 100;
-    progress.style.width = pourcentage + "%";
-    progress.innerHTML = final_time + " (" + parseInt(pourcentage) + "%)";
+        // Calcul & Update Progress Bar 
+        var pourcentage = (player.currentTime / player.duration) * 100;
+        timeProgress.style.width = pourcentage + "%";
+        timeProgress.innerHTML = final_time + " (" + parseInt(pourcentage) + "%)";
+    }
+    else {
+        if (!player.paused) {
+            timeProgress.style.width = 0 + "%";
+            timeProgress.innerHTML = "Initialisation...";
+        }
+    }
 }
+
 
 // Rajoute un zéro devant si le chiffre et inférieur à 10 (Retour de valeur [secondes | minutes])
 function zeroWarn(seconds, minutes) {
     return [(seconds >= 10) ? seconds : "0" + seconds, (minutes >= 10) ? minutes : "0" + minutes]
 }
+/* FIN TIME SECTION */
 
-var url = "";
-var last_url = "";
-// Detect play & pause - Listener (click)
-function clickPlayPauseList() {
-    // Update status of other btn's (If pause icons replace by play icons)
-    var btnPauseStatus = document.querySelectorAll(".mdi-pause-circle-outline");
-    btnPauseStatus.forEach(element => {
-        element.classList.remove("mdi-pause-circle-outline");
-        element.classList.add("mdi-play-circle-outline");
-    })
-
-    last_url = this.getAttribute("url");
-    // Si player en pause alors lire
-    if (player.paused) {
-        if (last_url !== url) {
-            url = last_url;
-            change(last_url);
-        }
-        player.play();
-        lastbtn = this;
-        btnPlayPause.setAttribute("value", "Pause");
-        playPause_Icons(this, false);
-    }
-    else // Si player en lecture alors pause
-    {
-        // Compare l'url du bouton et celui en cours dans le lecteur (Si pas les mêmes changer l'url du lecteur par la nouvelle reçu puis relancer automatiquement la lecture)
-        if (last_url !== url) {
-            url = last_url;
-            change(last_url);
-            player.play();
-            lastbtn = this;
-            btnPlayPause.setAttribute("value", "Pause");
-            playPause_Icons(this, false);
-        }
-        else {
-            player.pause();
-            btnPlayPause.setAttribute("value", "Play");
-            playPause_Icons(this, true);
-        }
-    }
-}
-function clickPlayPauseBtnLecteur() {
-    if (player.paused) {
-        player.play();
-        btnPlayPause.setAttribute("value", "Pause");
-        if (lastbtn.classList !== null) {
-            playPause_Icons(lastbtn, false)
-        }
-
-    }
-    else // Si player en lecture alors pause
-    {
-        btnPlayPause.setAttribute("value", "Play");
-        player.pause();
-        if (lastbtn.classList !== null) {
-            playPause_Icons(lastbtn, true)
-        }
-    }
-}
-// Ecoute le bouton play du lecteur
-btnPlayPause.addEventListener('click', clickPlayPauseBtnLecteur, false);
-lastbtn = btnPlay[0];
-
-
-
-// Permet de changer le logo [Play & Pause]
-function playPause_Icons(element, bool) {
-    // True = PLAY LOGO | False = PAUSE LOGO
-    if (bool) {
-        element.classList.add("mdi-play-circle-outline");
-        element.classList.remove("mdi-pause-circle-outline");
-    }
-    else {
-        element.classList.add("mdi-pause-circle-outline");
-        element.classList.remove("mdi-play-circle-outline");
-    }
-}
-
-// Change l'url du lecteur et celui du button play/pause (du lecteur) 
-function change(url) {
-    player.setAttribute("src", url);
-    btnPlayPause.setAttribute("url", url);
-    readTags(url);
-}
-
-
-// Lis les tags ID3 du fichier MP3
-function readTags(path) {
-    ID3.loadTags(path, function () {
-        var tags = ID3.getAllTags(path);
-        mp3Infos.innerText = tags.title + " - " + tags.artist;
-    });
-}
-
-// onload (Lis les Tags du fichier MP3 actuel)
-readTags(player.getAttribute("src"));
-
-// Volume 
-volume.addEventListener("input", function () { player.volume = (volume.value / 100); }, false);
-
+/* MUSIC POSTION (IN TIME) */
+var containerProgress = document.getElementById("mp3-progress-bar-container");
 // Avancement (Slider)
 containerProgress.addEventListener('click', function (e) {
-    progress.style.width = e.offsetX + "px";
+    timeProgress.style.width = e.offsetX + "px";
     var pct = Math.floor((e.offsetX / containerProgress.offsetWidth) * 100);
     sliderAvancement(pct);
-    progress.innerHTML = pct + " %";
+    timeProgress.innerHTML = pct + " %";
 }, false);
 
 // Changer l'avancement dans la musique 
@@ -175,4 +112,108 @@ function sliderAvancement(time) {
     if (player.paused) {
         player.play();
     }
+}
+/* FIN MUSIC POSTION (IN TIME) */
+
+// Gestion du volume 
+var volume = document.getElementById("mp3-volume");
+volume.addEventListener("input", function () { player.volume = (volume.value / 100); }, false);
+volume.value = 100;
+
+/* GESTION BTN PLAY/PAUSE TABLE */
+var btnPlayPauseLecteur = document.getElementById("btn-play-pause");
+
+btnPlayPauseLecteur.addEventListener("click", playerPlay, false);
+
+
+function playerPlay() {
+    // Si le bouton est de type btnPlay
+    if (this.nodeName === "I") {
+        detectedNewUrl(this.getAttribute("url"));
+        lastTablePlayBtnClicked = this;
+        var btnPauseStatus = document.querySelectorAll(".mdi-pause-circle-outline");
+        btnPauseStatus.forEach(element => {
+            element.classList.remove("mdi-pause-circle-outline");
+            element.classList.add("mdi-play-circle-outline");
+        })
+    }
+    if (!player.paused) {
+        player.pause();
+        playPause_Icons(lastTablePlayBtnClicked, "PAUSE");
+        playerBtnStatus("PAUSE");
+    }
+    else {
+        player.play();
+        playPause_Icons(lastTablePlayBtnClicked, "PLAY");
+        playerBtnStatus("PLAY");
+    }
+}
+
+// Detect si l'url du bouton est le même que celui actuellement dans le lecteur
+var cur_url = "";
+function detectedNewUrl(last) {
+    cur_url = player.getAttribute("src");
+    if (last !== cur_url) {
+        cur_url = last;
+        player.setAttribute("src", last);
+        readMP3_Tags(last);
+    }
+}
+
+// Permet de changer le logo [Play & Pause]
+function playPause_Icons(element, status) {
+    // Si reçois PAUSE alors afficher le btn play, si reçois PLAY affiche le bouton PLAY
+    if (status.toUpperCase() === "PAUSE") {
+        element.classList.add("mdi-play-circle-outline");
+        element.classList.remove("mdi-pause-circle-outline");
+    }
+    else if (status.toUpperCase() === "PLAY") {
+        element.classList.add("mdi-pause-circle-outline");
+        element.classList.remove("mdi-play-circle-outline");
+    }
+    else {
+        alert("Unknow receive (playPauseIcons function): " + status)
+    }
+}
+
+// Change le bouton play du lecteur
+function playerBtnStatus(status) {
+    // Si reçois PAUSE alors afficher le btn play, si reçois PLAY affiche le bouton PLAY
+    if (status.toUpperCase() === "PAUSE") {
+        btnPlayPauseLecteur.setAttribute("value", "Play");
+    }
+    else if (status.toUpperCase() === "PLAY") {
+        btnPlayPauseLecteur.setAttribute("value", "Pause");
+    }
+    else {
+        alert("Unknow receive (playPauseIcons function): " + status)
+    }
+}
+
+/* FIN GESTION BTN PLAY/PAUSE TABLE */
+
+
+// EXPERIMENTAL 
+
+
+player.addEventListener('progress', function () {
+    var duration = player.duration;
+    if (duration > 0) {
+        for (var i = 0; i < player.buffered.length; i++) {
+            if (player.buffered.start(player.buffered.length - 1 - i) < player.currentTime) {
+                document.getElementById("buffered").style.width = (player.buffered.end(player.buffered.length - 1 - i) / duration) * 100 + "%";
+                break;
+            }
+        }
+    }
+});
+video.onsuspend = (event) => {
+    timeProgress.innerHTML = ('Data loading has been suspended.');
+};
+player.onwaiting = (event) => {
+    timeProgress.style.width = 100 + "%";
+    timeProgress.innerHTML = "Chargement...";
+};
+player.onerror = function () {
+    cotimeProgress.innerHTML = ("Error " + videoElement.error.code + "; details: " + videoElement.error.message);
 }
