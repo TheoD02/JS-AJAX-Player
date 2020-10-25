@@ -25,16 +25,46 @@ td i:hover {
     user-select: none;
     display: none;
 }
-.pagination li,
-#mp3-progress-bar-container {
+.pagination li {
     cursor: pointer;
     user-select: none;
 }
-.nb_size {
-    width: 40px !important;
-    text-align: center;
+#mp3-progress-bar-container {
+    position: relative;
+    padding: 7px 0;
+    margin-top: 15px;
+    width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+}
+#progress-bar-mp3 {
+    height: 16px;
 }
 
-#buffered {
-    background-color: rgb(116, 163, 116);
+#progress-bar-mp3,
+#buffer {
+    position: absolute;
+
+    width: 0;
+}
+
+#progress-bar-mp3::after {
+    position: absolute;
+    top: 0;
+    right: -10px;
+
+    width: 10px;
+    height: 10px;
+    margin-top: -3px;
+
+    content: "";
+
+    border-radius: 6px;
+    opacity: 0;
+}
+
+#buffer {
+    background-color: rgba(0, 0, 0, 0.199);
+    height: 16px;
 }

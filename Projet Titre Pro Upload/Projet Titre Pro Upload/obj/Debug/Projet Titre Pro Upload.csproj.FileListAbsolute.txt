@@ -1,0 +1,39 @@
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\Projet Titre Pro Upload.exe.config
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\Projet Titre Pro Upload.exe
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\Projet Titre Pro Upload.pdb
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\Google.Protobuf.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\K4os.Compression.LZ4.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\K4os.Compression.LZ4.Streams.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\K4os.Hash.xxHash.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\MySql.Data.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\Renci.SshNet.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\System.Buffers.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\System.Memory.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\Ubiety.Dns.Core.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\Zstandard.Net.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\Google.Protobuf.pdb
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\Google.Protobuf.xml
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\K4os.Compression.LZ4.xml
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\K4os.Compression.LZ4.Streams.xml
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\K4os.Hash.xxHash.xml
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\MySql.Data.xml
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\Renci.SshNet.xml
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\System.Buffers.xml
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\System.Memory.xml
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\obj\Debug\Projet Titre Pro Upload.csprojAssemblyReference.cache
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\obj\Debug\Projet_Titre_Pro_Upload.DatabaseConnect.resources
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\obj\Debug\Projet_Titre_Pro_Upload.Form1.resources
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\obj\Debug\Projet_Titre_Pro_Upload.Properties.Resources.resources
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\obj\Debug\Projet Titre Pro Upload.csproj.GenerateResource.cache
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\obj\Debug\Projet Titre Pro Upload.csproj.CoreCompileInputs.cache
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\obj\Debug\Projet Titre Pro Upload.csproj.CopyComplete
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\obj\Debug\Projet Titre Pro Upload.exe
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\obj\Debug\Projet Titre Pro Upload.pdb
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\JetBrains.Annotations.dll
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\JetBrains.Annotations.xml
+C:\Users\Theo (ALL)\source\repos\Projet Titre Pro Upload\Projet Titre Pro Upload\bin\Debug\ID3Tag.Core.dll

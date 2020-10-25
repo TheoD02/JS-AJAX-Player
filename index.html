@@ -53,11 +53,14 @@
         <figure>
             <figcaption id="mp3-infos">Title of tracks</figcaption>
 
-            <div id="mp3-progress-bar-container" class="progress mx-auto">
-                <div id="mp3-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated"
-                    role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                <div id="buffered"></div>
+            <div id="mp3-progress-bar-container" class="progress-container">
+                <div class="progress mx-auto">
+                    <span id="progress-bar-mp3" class="progress-bar progress-bar-striped progress-bar-animated"
+                        role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></span>
+                    <span id="buffer"></span>
+                </div>
             </div>
+
             <input id="btn-play-pause" type="button" value="Play" />
             <label for="formControlRange">Volume</label>
             <input id="mp3-volume" type="range" class="form-control-range" id="formControlRange">

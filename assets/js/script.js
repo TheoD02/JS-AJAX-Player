@@ -50,8 +50,8 @@ function readMP3_Tags(fileToRead) {
 }
 
 /* TIME SECTION*/
-var timeProgress = document.getElementById("mp3-progress-bar");
-
+var timeProgress = document.getElementById("progress-bar-mp3");
+var progress = document.getElementById("buffer");
 // Update Time & Listener (timeupdate)
 player.addEventListener('timeupdate', updateTime, false);
 function updateTime() {
@@ -77,7 +77,8 @@ function updateTime() {
 
         // Calcul & Update Progress Bar 
         var pourcentage = (player.currentTime / player.duration) * 100;
-        timeProgress.style.width = pourcentage + "%";
+
+        timeProgress.style.width = (pourcentage) + "%";
         timeProgress.innerHTML = final_time + " (" + parseInt(pourcentage) + "%)";
     }
     else {
@@ -85,6 +86,13 @@ function updateTime() {
             timeProgress.style.width = 0 + "%";
             timeProgress.innerHTML = "Initialisation...";
         }
+    }
+    var buffered = player.buffered;
+    if (buffered.length) {
+        var loaded = Math.round(100 * buffered.end(0) / player.duration);
+
+        progress.style.width = loaded + '%';
+        progress.style.backgroundColor = "";
     }
 }
 
@@ -195,25 +203,14 @@ function playerBtnStatus(status) {
 
 // EXPERIMENTAL 
 
-
-player.addEventListener('progress', function () {
-    var duration = player.duration;
-    if (duration > 0) {
-        for (var i = 0; i < player.buffered.length; i++) {
-            if (player.buffered.start(player.buffered.length - 1 - i) < player.currentTime) {
-                document.getElementById("buffered").style.width = (player.buffered.end(player.buffered.length - 1 - i) / duration) * 100 + "%";
-                break;
-            }
-        }
-    }
-});
-video.onsuspend = (event) => {
+player.onsuspend = (event) => {
     timeProgress.innerHTML = ('Data loading has been suspended.');
 };
+
 player.onwaiting = (event) => {
     timeProgress.style.width = 100 + "%";
     timeProgress.innerHTML = "Chargement...";
 };
 player.onerror = function () {
-    cotimeProgress.innerHTML = ("Error " + videoElement.error.code + "; details: " + videoElement.error.message);
+    timeProgress.innerHTML = ("Error " + player.error.code + "; details: " + player.error.message);
 }
