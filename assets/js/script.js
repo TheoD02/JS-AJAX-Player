@@ -20,6 +20,8 @@ function initplayer() {
         btnPlay.forEach(btn => {
             btn.addEventListener("click", playerPlay, false);
         });
+        // Assigne donc le dernier bouton 'cliquer' comme le premier bouton de lecture
+        lastTablePlayBtnClicked = btnPlay[0];
     }, 200);
 
     // Regarder si le lecteur a déjà une source, si pas de source lui donner la 1ere track du tableau afficher à l'écran
@@ -28,9 +30,6 @@ function initplayer() {
         var firstUrl = document.querySelector(".playback > i.mdi.mdi-play-circle-outline").getAttribute("url");
         // Assigne l'url au lecteur
         player.setAttribute("src", firstUrl);
-
-        // Assigne donc le dernier bouton 'cliquer' comme le premier bouton de lecture
-        lastTablePlayBtnClicked = btnPlay[0];
     }
 
     // Lire les tags du fichier en cours
@@ -132,8 +131,6 @@ volume.value = 100;
 var btnPlayPauseLecteur = document.getElementById("btn-play-pause");
 
 btnPlayPauseLecteur.addEventListener("click", playerPlay, false);
-
-
 function playerPlay() {
     // Si le bouton est de type btnPlay
     if (this.nodeName === "I") {
@@ -154,6 +151,7 @@ function playerPlay() {
         player.play();
         playPause_Icons(lastTablePlayBtnClicked, "PLAY");
         playerBtnStatus("PLAY");
+        spectre();
     }
 }
 
@@ -204,7 +202,7 @@ function playerBtnStatus(status) {
 // EXPERIMENTAL 
 
 player.onsuspend = (event) => {
-    timeProgress.innerHTML = ('Data loading has been suspended.');
+    timeProgress.innerHTML = ('Arrêt du chargement des données.');
 };
 
 player.onwaiting = (event) => {
@@ -213,4 +211,64 @@ player.onwaiting = (event) => {
 };
 player.onerror = function () {
     timeProgress.innerHTML = ("Error " + player.error.code + "; details: " + player.error.message);
+}
+
+
+// CANVAS
+var contexteAudio = new (window.AudioContext || window.webkitAudioContext)();
+source = contexteAudio.createMediaElementSource(player);
+var analyseur = contexteAudio.createAnalyser();
+source.connect(analyseur);
+analyseur.connect(contexteAudio.destination);
+
+function spectre() {
+    analyseur.fftSize = 2048;
+    var tailleMemoireTampon = analyseur.frequencyBinCount;
+    var tableauDonnees = new Uint8Array(tailleMemoireTampon);
+
+    analyseur.getByteTimeDomainData(tableauDonnees);
+
+    var canvas = document.getElementById("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    var contexteCanvas = canvas.getContext("2d");
+
+    var LARGEUR = canvas.width;
+    var HAUTEUR = canvas.height;
+
+    function dessiner() {
+        if (!player.paused) {
+            dessin = requestAnimationFrame(dessiner);
+
+            analyseur.getByteTimeDomainData(tableauDonnees);
+            console.log(tableauDonnees);
+            contexteCanvas.fillStyle = 'rgb(200, 200, 200)';
+            contexteCanvas.fillRect(0, 0, LARGEUR, HAUTEUR);
+
+            contexteCanvas.lineWidth = 2;
+            contexteCanvas.strokeStyle = 'rgb(0, 0, 0)';
+
+            contexteCanvas.beginPath();
+
+            var largeurSegment = LARGEUR * 1.0 / tailleMemoireTampon;
+            var x = 0;
+
+            for (var i = 0; i < tailleMemoireTampon; i++) {
+
+                var v = tableauDonnees[i] / 128.0;
+                var y = v * HAUTEUR / 2;
+
+                if (i === 0) {
+                    contexteCanvas.moveTo(x, y);
+                } else {
+                    contexteCanvas.lineTo(x, y);
+                }
+
+                x += largeurSegment;
+            }
+            contexteCanvas.lineTo(canvas.width, canvas.height / 2);
+            contexteCanvas.stroke();
+        }
+    };
+    dessiner();
 }
